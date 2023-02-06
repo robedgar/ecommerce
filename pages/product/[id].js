@@ -13,12 +13,14 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
+import db from '../../utils/db';
+import Product from '../../models/Product';
 
-const ProductPage = () => {
+const ProductPage = (props) => {
   const router = useRouter();
   const { id } = router.query;
 
-  const product = data.products.find((product) => product.id === parseInt(id));
+  const { product } = props;
 
   if (!product) return <div>Product not found</div>;
   return (
@@ -75,5 +77,18 @@ const ProductPage = () => {
     </Container>
   );
 };
+
+export async function getServerSideProps(context) {
+  const { params } = context;
+  const { id } = params;
+
+  await db.connect();
+  const product = await Product.findOne({ id }).lean();
+  await db.disconnect();
+
+  return {
+    props: { product: db.convertDocToObj(product) },
+  };
+}
 
 export default ProductPage;
