@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useRouter } from 'next/router';
 import { data } from '../../utils/data';
 import {
@@ -15,10 +15,13 @@ import {
 } from '@chakra-ui/react';
 import db from '../../utils/db';
 import Product from '../../models/Product';
+import { CartContext } from '../../context/CartContext';
 
 const ProductPage = (props) => {
   const router = useRouter();
   const { id } = router.query;
+
+  const { addToCart } = useContext(CartContext);
 
   const { product } = props;
 
@@ -68,6 +71,7 @@ const ProductPage = (props) => {
               bg={useColorModeValue('gray.900', 'gray.50')}
               color={useColorModeValue('white', 'gray.900')}
               textTransform={'uppercase'}
+              onClick={() => addToCart(product)}
             >
               Add to cart
             </Button>
